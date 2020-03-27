@@ -6,19 +6,19 @@ let Cupom = new Schema({
 	desc: String,
 	promo: String,
 	lojaId: String
-})
+}, {versionKey:false})
 
 let Vantagem = new Schema({
 	titulo: String,
 	desc: String,
 	promo: String,
 	loja: String
-})
+}, {versionKey:false})
 
 let Loja = new Schema({
 	nome: String,
 	logoUrl: String,
-})
+}, {versionKey:false})
 
 let Usuario = new Schema({
 	nome: String,
@@ -26,7 +26,7 @@ let Usuario = new Schema({
 	senha: String,
 	cuponsUsados: [String],
 	vantagensUsadas: [String]
-})
+}, {versionKey:false})
 
 module.exports = {
 	Cupom: mongoose.model('cupons', Cupom),

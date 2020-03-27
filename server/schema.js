@@ -38,6 +38,15 @@ let typeDefs = gql`
 		usuarios: [Usuario!]!
 		vantagens: [Vantagem!]!
 	}
+	
+	type Mutation {
+		addCupom(
+			titulo: String
+			desc: String
+			promo: String
+			loja: String
+		): Cupom
+	}
 `
 
 module.exports = typeDefs
