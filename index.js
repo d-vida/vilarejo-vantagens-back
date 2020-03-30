@@ -1,15 +1,39 @@
-let {ApolloServer} = require('apollo-server')
-let typeDefs = require('./server/schema.js')
-let resolvers = require('./server/resolvers.js')
+let {Cupom} = require('./models.js')
+
 let mongoose = require('mongoose')
+let express = require('express')
+let bodyParser = require('body-parser')
 
 mongoose.connect(
-  'mongodb+srv://admin:admin@vilarejo-9wp9p.gcp.mongodb.net/vilarejo?retryWrites=true&w=majority',
-  {useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:true}
+	'mongodb+srv://admin:admin@vilarejo-9wp9p.gcp.mongodb.net/vilarejo?retryWrites=true&w=majority',
+	{useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:true}
 )
-mongoose.connection.once('open', ()=>{
-	console.log('> MongoDB Atlas Connected')
+
+let app = express()
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended:true}))
+
+app.listen(4000, () => {
+	console.log('listening at 4000')
 })
 
-let server = new ApolloServer({typeDefs, resolvers})
-server.listen(4001).then(({url})=>{console.log(`Apollo Server Connected at ${url}`)})
+// endpoints
+app.get('/cupons', async (req, res) => {
+	let result = await Cupom.find().exec()
+	res.send(result)
+})
+
+app.post('/addCupom', async (req,res) => {
+	try {
+		let newCupom = new Cupom(req.body)
+		let result = await newCupom.save()
+		res.send(result)
+	} catch(error) {
+		res.status(500).send(error)
+	}
+})
+
+app.delete('/deleteCupom/:id', async (req,res) => {
+	let result = Cupom.deleteOne({_id: req.params.id}).exec()
+	res.send(result)
+})
