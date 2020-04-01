@@ -29,6 +29,15 @@ app.get('/getCupons', async (req, res) => {
 	}
 })
 
+app.get('/getCupom/:id', async (req, res) => {
+	try {
+		let result = await Cupom.findById(req.params.id).exec()
+		res.send(result)
+	} catch(error) {
+		res.status(500).send(error)
+	}
+})
+
 app.post('/addCupom', async (req,res) => {
 	try {
 		let newCupom = new Cupom(req.body)
