@@ -32,7 +32,7 @@ app.get('/getCupons', async (req, res) => {
 app.post('/addCupom', async (req,res) => {
 	try {
 		let newCupom = new Cupom(req.body)
-		let result = await newCupom.save()
+		let result = await newCupom.save({validateBeforeSave:false})
 		res.send(result)
 	} catch(error) {
 		res.status(500).send(error)
