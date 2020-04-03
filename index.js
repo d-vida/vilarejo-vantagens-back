@@ -53,6 +53,10 @@ app.post('/addCupom', async (req,res) => {
 app.delete('/deleteCupom/:id', async (req,res) => {
 	try{
 		let result = await Cupom.deleteOne({_id: req.params.id}).exec()
+		await Usuario.findByIdAndUpdate(
+			req.body.usuario,
+			{$push:{cuponsUsados:req.body.cupom}}
+		)
 		res.send(result)
 	} catch(error) {
 		res.status(500).send(error)
@@ -62,6 +66,30 @@ app.delete('/deleteCupom/:id', async (req,res) => {
 app.put('/updateCupom/:id', async (req,res) => {
 	try {
 		let result = await Cupom.updateOne({_id: req.params.id}, req.body)
+		res.send(result)
+	} catch(error) {
+		res.status(500).send(error)
+	}
+})
+
+app.patch('/deleteCupomFromUsuarios/:id', async (req,res) => {
+	try {
+		let result = await Usuario.updateMany(
+			{},
+			{$pull:{cuponsUsados:req.params.id}}
+		)
+		res.send(result)
+	} catch(error) {
+		res.status(500).send(error)
+	}
+})
+
+app.patch('/addCupomToUsuario', async (req,res) => {
+	try {
+		let result = await Usuario.findByIdAndUpdate(
+			req.body.usuario,
+			{$push:{cuponsUsados:req.body.cupom}}
+		)
 		res.send(result)
 	} catch(error) {
 		res.status(500).send(error)
