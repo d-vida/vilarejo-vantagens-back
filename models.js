@@ -5,7 +5,8 @@ let Cupom = new Schema({
 	titulo: String,
 	desc: String,
 	promo: String,
-	loja: String
+	loja: String,
+	qrcode: String
 }, {versionKey:false, strict:false})
 
 let Vantagem = new Schema({
