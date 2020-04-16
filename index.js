@@ -144,6 +144,15 @@ app.put('/updateLoja/:id', async (req,res) => {
 	}
 })
 
+app.post('/checkLoja', async (req,res) => {
+	try {
+		let result = await Loja.exists({nome:req.body.nome, senha:req.body.senha})
+		res.send(result)
+	} catch(error) {
+		res.status(500).send(error)
+	}
+})
+
 /////////////////////////////////////////////// USUARIOS
 
 app.get('/getUsuarios', async (req, res) => {
