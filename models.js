@@ -7,6 +7,7 @@ let Cupom = new Schema({
 	foto: String,
 	promo: String,
 	loja: String,
+	categoria: String,
 	qrcode: String
 }, {versionKey:false, strict:false})
 
