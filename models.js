@@ -4,6 +4,7 @@ let Schema = mongoose.Schema
 let Cupom = new Schema({
 	titulo: String,
 	desc: String,
+	foto: String,
 	promo: String,
 	loja: String,
 	qrcode: String
@@ -28,6 +29,7 @@ let Usuario = new Schema({
 	cuponsUsados: [String],
 	vantagensUsadas: [String]
 }, {versionKey:false, strict:false})
+
 
 module.exports = {
 	Cupom: mongoose.model('cupons', Cupom),
