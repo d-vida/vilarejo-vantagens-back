@@ -21,6 +21,7 @@ let Vantagem = new Schema({
 let Loja = new Schema({
 	nome: String,
 	logo: String,
+	local: String,
 }, {versionKey:false, strict:false})
 
 let Usuario = new Schema({
