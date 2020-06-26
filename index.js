@@ -165,6 +165,23 @@ app.get('/getUsuarios', async (req, res) => {
 	}
 })
 
+app.get('/Login/:email/:senha', async (req, res) => {
+	try {
+		const usuario = await Usuario.findOne(req.params.email)
+		if (!usuario) {
+			throw new Error('Email não cadastrado.')
+		}
+		const ComparandoSenha = bcrypt.compareSync(req.params.senha, usuario.senha)
+
+		if (!ComparandoSenha) {
+			throw new Error('Senha incorreta.')
+		}
+		res.send(usuario)
+	} catch (error) {
+		res.status(500).send(error)
+	}
+})
+
 app.get('/getUsuario/:id', async (req, res) => {
 	try {
 		let result = await Usuario.findById(req.params.id).exec()
