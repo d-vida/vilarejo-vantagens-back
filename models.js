@@ -28,6 +28,7 @@ let Usuario = new Schema({
 	nome: String,
 	email: String,
 	senha: String,
+	numero: String,
 	cuponsUsados: [String],
 	vantagensUsadas: [String]
 }, {versionKey:false, strict:false})
