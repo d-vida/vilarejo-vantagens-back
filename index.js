@@ -199,6 +199,17 @@ app.get('/getUsuario/:id', async (req, res) => {
 	}
 })
 
+app.get('/getUsuarioByToken/:token', async (req, res) => {
+	try {
+		let Token = req.params.token
+		let decoded = await jwt.decode(Token, process.env.SECRET)
+		let result = await Usuario.findById(decoded)
+		res.send(result)
+	} catch (error) {
+		res.status(500).send(error)
+	}
+})
+
 app.post('/addUsuario', async (req, res) => {
 	try {
 		const Email = Usuario.findOne({ email: req.body.email })
