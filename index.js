@@ -5,6 +5,8 @@ let express = require('express')
 let bodyParser = require('body-parser')
 let cors = require('cors')
 const bcrypt = require('bcrypt-nodejs')
+const jwt = require('jwt-simple')
+require('dotenv').config()
 
 mongoose.connect(
 	'mongodb+srv://admin:admin@vilarejo-9wp9p.gcp.mongodb.net/vilarejo?retryWrites=true&w=majority',
@@ -171,14 +173,18 @@ app.get('/Login/:email/:senha', async (req, res) => {
 		const usuario = await Usuario.findOne({ email: Email })
 		console.log('usuario aqui', usuario)
 		if (!usuario) {
-			res.status(404).send({ error: 'Usuário não cadastrado' })
+			res.status(401).send('Usuário não cadastrado')
 		}
 		const ComparandoSenha = bcrypt.compareSync(req.params.senha, usuario.senha)
 
 		if (!ComparandoSenha) {
-			res.status(404).send({ error: 'Senha incorreta' })
+			res.status(401).send('Senha incorreta')
 		}
-		res.send(usuario)
+		let token = jwt.encode(usuario._id, process.env.SECRET)
+		console.log('token ->', token)
+		// var decoded = jwt.decode(token, process.env.SECRET)
+		// console.log('ID->', decoded)
+		res.send(token)
 	} catch (error) {
 		res.status(500).send(error)
 	}
@@ -195,19 +201,21 @@ app.get('/getUsuario/:id', async (req, res) => {
 
 app.post('/addUsuario', async (req, res) => {
 	try {
-		const Email = await User.findOne({ email: req.params.email })
-
+		const Email = Usuario.findOne({ email: req.body.email })
+		console.log(Email)
 		const salt = bcrypt.genSaltSync()
 		req.body.senha = bcrypt.hashSync(req.body.senha, salt)
 		let newUsuario = new Usuario(req.body)
 		let result = await newUsuario.save({ validateBeforeSave: false })
-		if (Email == null) {
-			res.send(result)
-		} else {
-			res; status(404).send('Email is already assigned')
-		}
-		res.send(result)
+		let token = jwt.encode(result._id, process.env.SECRET)
+		res.send(token)
+		// if (Email == null) {
+		// 	res.send(result)
+		// } else {
+		// 	res.status(404).send('Email já cadastrado')
+		// }
 	} catch (error) {
+		console.log(error)
 		res.status(500).send(error)
 	}
 })
