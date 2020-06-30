@@ -202,7 +202,6 @@ app.get('/getUsuario/:id', async (req, res) => {
 app.post('/addUsuario', async (req, res) => {
 	try {
 		const Email = Usuario.findOne({ email: req.body.email })
-		console.log(Email)
 		const salt = bcrypt.genSaltSync()
 		req.body.senha = bcrypt.hashSync(req.body.senha, salt)
 		let newUsuario = new Usuario(req.body)
