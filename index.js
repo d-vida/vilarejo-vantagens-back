@@ -167,14 +167,16 @@ app.get('/getUsuarios', async (req, res) => {
 
 app.get('/Login/:email/:senha', async (req, res) => {
 	try {
-		const usuario = await Usuario.findOne(req.params.email)
+		const Email = req.params.email
+		const usuario = await Usuario.findOne({ email: Email })
+		console.log('usuario aqui', usuario)
 		if (!usuario) {
-			throw new Error('Email não cadastrado.')
+			res.status(404).send({ error: 'Usuário não cadastrado' })
 		}
 		const ComparandoSenha = bcrypt.compareSync(req.params.senha, usuario.senha)
 
 		if (!ComparandoSenha) {
-			throw new Error('Senha incorreta.')
+			res.status(404).send({ error: 'Senha incorreta' })
 		}
 		res.send(usuario)
 	} catch (error) {
@@ -193,10 +195,17 @@ app.get('/getUsuario/:id', async (req, res) => {
 
 app.post('/addUsuario', async (req, res) => {
 	try {
+		const Email = await User.findOne({ email: req.params.email })
+
 		const salt = bcrypt.genSaltSync()
 		req.body.senha = bcrypt.hashSync(req.body.senha, salt)
 		let newUsuario = new Usuario(req.body)
 		let result = await newUsuario.save({ validateBeforeSave: false })
+		if (Email == null) {
+			res.send(result)
+		} else {
+			res; status(404).send('Email is already assigned')
+		}
 		res.send(result)
 	} catch (error) {
 		res.status(500).send(error)
