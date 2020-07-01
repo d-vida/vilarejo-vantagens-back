@@ -171,7 +171,6 @@ app.get('/Login/:email/:senha', async (req, res) => {
 	try {
 		const Email = req.params.email
 		const usuario = await Usuario.findOne({ email: Email })
-		console.log('usuario aqui', usuario)
 		if (!usuario) {
 			res.status(401).send('Usuário não cadastrado')
 		}
@@ -181,9 +180,7 @@ app.get('/Login/:email/:senha', async (req, res) => {
 			res.status(401).send('Senha incorreta')
 		}
 		let token = jwt.encode(usuario._id, process.env.SECRET)
-		console.log('token ->', token)
-		// var decoded = jwt.decode(token, process.env.SECRET)
-		// console.log('ID->', decoded)
+		// console.log('token ->', token)
 		res.send(token)
 	} catch (error) {
 		res.status(500).send(error)
