@@ -99,6 +99,16 @@ app.patch('/addCupomToUsuario', async (req, res) => {
 	}
 })
 
+app.get('/getCuponsFromUsuarioAsObject/:id', async(req, res) => {
+	try {
+		let usuario = await Usuario.findById(req.params.id).exec()
+		let cupons = await Cupom.find({_id: {$in: usuario.cuponsUsados}})
+		res.send(cupons)
+	} catch (error) {
+		res.status(500).send(error)
+	}
+})
+
 /////////////////////////////////////////////////// LOJA
 
 app.get('/getLojas', async (req, res) => {
