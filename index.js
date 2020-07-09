@@ -190,7 +190,7 @@ app.get('/Login/:email/:senha', async (req, res) => {
 			res.status(401).send('Senha incorreta')
 		}
 		let token = jwt.encode(usuario._id, process.env.SECRET)
-		// console.log('token ->', token)
+		
 		res.send(token)
 	} catch (error) {
 		res.status(500).send(error)
