@@ -99,10 +99,10 @@ app.patch('/addCupomToUsuario', async (req, res) => {
 	}
 })
 
-app.get('/getCuponsFromUsuarioAsObject/:id', async(req, res) => {
+app.get('/getCuponsFromUsuarioAsObject/:id', async (req, res) => {
 	try {
 		let usuario = await Usuario.findById(req.params.id).exec()
-		let cupons = await Cupom.find({_id: {$in: usuario.cuponsUsados}})
+		let cupons = await Cupom.find({ _id: { $in: usuario.cuponsUsados } })
 		res.send(cupons)
 	} catch (error) {
 		res.status(500).send(error)
@@ -190,7 +190,7 @@ app.get('/Login/:email/:senha', async (req, res) => {
 			res.status(401).send('Senha incorreta')
 		}
 		let token = jwt.encode(usuario._id, process.env.SECRET)
-		
+
 		res.send(token)
 	} catch (error) {
 		res.status(500).send(error)
@@ -220,17 +220,16 @@ app.get('/getUsuarioByToken/:token', async (req, res) => {
 app.post('/addUsuario', async (req, res) => {
 	try {
 		const Email = Usuario.findOne({ email: req.body.email })
-		const salt = bcrypt.genSaltSync()
-		req.body.senha = bcrypt.hashSync(req.body.senha, salt)
-		let newUsuario = new Usuario(req.body)
-		let result = await newUsuario.save({ validateBeforeSave: false })
-		let token = jwt.encode(result._id, process.env.SECRET)
-		res.send(token)
-		// if (Email == null) {
-		// 	res.send(result)
-		// } else {
-		// 	res.status(404).send('Email já cadastrado')
-		// }
+		if (Email) {
+			res.status(401).send('Email já cadastrado')
+		} else {
+			const salt = bcrypt.genSaltSync()
+			req.body.senha = bcrypt.hashSync(req.body.senha, salt)
+			let newUsuario = new Usuario(req.body)
+			let result = await newUsuario.save({ validateBeforeSave: false })
+			let token = jwt.encode(result._id, process.env.SECRET)
+			res.send(token)
+		}
 	} catch (error) {
 		console.log(error)
 		res.status(500).send(error)
