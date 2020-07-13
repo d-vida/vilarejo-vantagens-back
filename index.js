@@ -183,15 +183,16 @@ app.get('/Login/:email/:senha', async (req, res) => {
 		const usuario = await Usuario.findOne({ email: Email })
 		if (!usuario) {
 			res.status(401).send('Usuário não cadastrado')
-		}
-		const ComparandoSenha = bcrypt.compareSync(req.params.senha, usuario.senha)
+		} else {
+			const ComparandoSenha = bcrypt.compareSync(req.params.senha, usuario.senha)
 
-		if (!ComparandoSenha) {
-			res.status(401).send('Senha incorreta')
-		}
-		let token = jwt.encode(usuario._id, process.env.SECRET)
+			if (!ComparandoSenha) {
+				res.status(401).send('Senha incorreta')
+			}
+			let token = jwt.encode(usuario._id, process.env.SECRET)
 
-		res.send(token)
+			res.send(token)
+		}
 	} catch (error) {
 		res.status(500).send(error)
 	}
