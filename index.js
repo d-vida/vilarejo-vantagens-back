@@ -1,4 +1,4 @@
-let { Cupom, Loja, Usuario, Vantagem } = require('./models.js')
+let { Cupom, Loja, Usuario, Vantagem, UsuarioLoja } = require('./models.js')
 
 let mongoose = require('mongoose')
 let express = require('express')
@@ -161,6 +161,55 @@ app.post('/checkLoja', async (req, res) => {
 	try {
 		let result = await Loja.exists({ nome: req.body.nome, senha: req.body.senha })
 		res.send(result)
+	} catch (error) {
+		res.status(500).send(error)
+	}
+})
+
+app.get('/getUsuariosLoja', async (req, res) => {
+	try {
+		let result = await UsuarioLoja.find().exec()
+		res.send(result)
+	} catch (error) {
+		res.status(500).send(error)
+	}
+})
+
+app.post('/addUsuarioLoja', async (req, res) => {
+	try {
+		const Nome = await UsuarioLoja.findOne({ nome: req.body.nome })
+		if (Nome) {
+			res.status(401).send('Loja já cadastrado')
+		} else {
+			const salt = bcrypt.genSaltSync()
+			req.body.senha = bcrypt.hashSync(req.body.senha, salt)
+			let newUsuarioLoja = new UsuarioLoja(req.body)
+			let result = await newUsuarioLoja.save({ validateBeforeSave: false })
+			let token = jwt.encode(result._id, process.env.SECRET)
+			res.send(token)
+		}
+	} catch (error) {
+		console.log(error)
+		res.status(500).send(error)
+	}
+})
+
+app.get('/LojistaLogin/:loja/:senha', async (req, res) => {
+	try {
+		const Loja = req.params.loja
+		const lojista = await UsuarioLoja.findOne({ loja: Loja })
+		if (!lojista) {
+			res.status(401).send('Lojista não cadastrado')
+		} else {
+			const ComparandoSenha = bcrypt.compareSync(req.params.senha, lojista.senha)
+
+			if (!ComparandoSenha) {
+				res.status(401).send('Senha incorreta')
+			}
+			let token = jwt.encode(lojista._id, process.env.SECRET)
+
+			res.send(token)
+		}
 	} catch (error) {
 		res.status(500).send(error)
 	}

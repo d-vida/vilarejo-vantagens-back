@@ -24,6 +24,11 @@ let Loja = new Schema({
 	local: String,
 }, {versionKey:false, strict:false})
 
+let UsuarioLoja = new Schema({
+	loja: String,
+	senha: String
+}, {versionKey:false, strict:false})
+
 let Usuario = new Schema({
 	nome: String,
 	email: String,
@@ -38,5 +43,6 @@ module.exports = {
 	Cupom: mongoose.model('cupons', Cupom),
 	Loja: mongoose.model('lojas', Loja),
 	Usuario: mongoose.model('usuarios', Usuario),
-	Vantagem: mongoose.model('vantagens', Vantagem)
+	Vantagem: mongoose.model('vantagens', Vantagem),
+	UsuarioLoja: mongoose.model('userLojas', UsuarioLoja)
 }
